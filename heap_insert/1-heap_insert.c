@@ -2,25 +2,45 @@
 #include "binary_trees.h"
 
 /**
- * count_complete_depth - count child nodes that are complete
+ * count_depth - count depth of the tree
  * @root: pointer to the root of the tree
  * Return: depth of the binary tree
 */
-static int count_complete_depth(binary_tree_t *root)
+static int count_depth(binary_tree_t *root)
 {
 	int depth_left = 0;
 	int depth_right = 0;
 
-	if (root == NULL || root->left == NULL || root->right == NULL)
+	if (root == NULL)
 		return (0);
 
-	depth_left = count_complete_depth(root->left);
-	depth_right = count_complete_depth(root->right);
+	depth_left = count_depth(root->left);
+	depth_right = count_depth(root->right);
 
 	if (depth_left > depth_right)
 		return (depth_left + 1);
 
 	return (depth_right + 1);
+}
+
+
+/**
+ * is_perfect_tree - Check if the binary tree is perfectly balanced.
+ * @root: Pointer to the root of the tree.
+ * Return: 1 if balanced, 0 otherwise
+*/
+static int is_perfect_tree(binary_tree_t *root)
+{
+	if (root == NULL)
+		return (0);
+
+	if (root->left == NULL && root->right == NULL)
+		return (1);
+
+	if (count_depth(root->left) == count_depth(root->right))
+		return (is_perfect_tree(root->left) && is_perfect_tree(root->right));
+
+	return (0);
 }
 
 /**
@@ -33,12 +53,11 @@ static heap_t *find_insert_parent(binary_tree_t *root)
 	if (root->left == NULL || root->right == NULL)
 		return (root);
 
-	if (count_complete_depth(root->left) == count_complete_depth(root->right))
+	if (is_perfect_tree(root) || !is_perfect_tree(root->left))
 		return (find_insert_parent(root->left));
 
 	return (find_insert_parent(root->right));
 }
-
 
 /**
  * bubble_up_inserted_value - Ensure the new node respects Max Heap Ordering.
@@ -47,10 +66,11 @@ static heap_t *find_insert_parent(binary_tree_t *root)
 */
 static heap_t *bubble_up_inserted_value(heap_t *new_node)
 {
+	int temp;
+
 	if (new_node->parent != NULL && new_node->parent->n < new_node->n)
 	{
-		int temp = new_node->n;
-
+		temp = new_node->n;
 		new_node->n = new_node->parent->n;
 		new_node->parent->n = temp;
 		return (bubble_up_inserted_value(new_node->parent));
@@ -58,7 +78,6 @@ static heap_t *bubble_up_inserted_value(heap_t *new_node)
 
 	return (new_node);
 }
-
 
 /**
  * heap_insert - Insert a new value in a Max Heap Binary tree
