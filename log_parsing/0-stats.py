@@ -62,9 +62,8 @@ class LogParser():
             print(f'{code}: {hits}')
 
 
-if __name__ == "__main__":
-    parser = LogParser()
-    try:
-        parser.run()
-    except KeyboardInterrupt:
-        parser.print_stats()
+parser = LogParser()
+try:
+    parser.run()
+except KeyboardInterrupt:
+    parser.print_stats()
