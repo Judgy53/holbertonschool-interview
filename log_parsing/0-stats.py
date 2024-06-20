@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-""" LogParser Module.
-    Provides a LogParser class that parses request log from stdin
+"""
+LogParser Module.
+Provides a LogParser class that parses request log from stdin
 """
 import sys
 
@@ -19,7 +20,8 @@ code_hits = {
 
 
 def print_stats(file_size, code_hits) -> None:
-    """ Print the current parsing stats
+    """
+    Print the current parsing stats
     """
     print(f'File size: {file_size}')
     for code in code_hits:
