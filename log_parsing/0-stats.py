@@ -1,9 +1,11 @@
 #!/usr/bin/python3
+"""LogParser Module"""
 import sys
 import re
 
 
 class LogParser():
+    """LogParser class"""
     line_count = 0
     file_size = 0
     code_hits = {
@@ -18,6 +20,7 @@ class LogParser():
     }
 
     def run(self) -> None:
+        """Infinite loop that parses stdin logs"""
         line_regex = re.compile((r'(?:[0-9]{1,3}\.?){4} - \[.*?\] '
                                  r'"GET /projects/260 HTTP/1.1" '
                                  r'([0-9]+) ([0-9]+)'))
@@ -45,6 +48,7 @@ class LogParser():
                 self.print_stats()
 
     def print_stats(self) -> None:
+        """Print the current parser stats"""
         print(f'File size: {self.file_size}')
         for code in self.code_hits:
             hits = self.code_hits[code]

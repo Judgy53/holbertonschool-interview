@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""Generator of fake logs to parse"""
 import random
 import sys
 from time import sleep
