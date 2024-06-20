@@ -3,7 +3,6 @@
     Provides a LogParser class that parses request log from stdin
 """
 import sys
-import re
 
 line_count = 0
 file_size = 0
@@ -31,20 +30,17 @@ def print_stats(file_size, code_hits) -> None:
 
 
 try:
-    line_regex = re.compile((r'(?:[0-9]{1,3}\.?){4} - \[.*?\] '
-                             r'"GET /projects/260 HTTP/1.1" '
-                             r'([0-9]+) ([0-9]+)'))
     while True:
         input = sys.stdin.readline()
         line_count += 1
 
-        match = re.match(line_regex, input)
-        if match is None:
+        split_line = input.split(' ')
+        if len(split_line) < 2:
             continue
 
-        code = match.group(1)
+        code = split_line[-2]
         try:
-            size = int(match.group(2))
+            size = int(split_line[-1])
         except Exception:
             continue
 
