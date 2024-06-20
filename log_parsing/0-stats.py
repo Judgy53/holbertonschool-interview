@@ -23,7 +23,7 @@ def print_stats(file_size, code_hits) -> None:
     """
     Print the current parsing stats
     """
-    print(f'File size: {file_size}')
+    print('File size:', file_size)
     for code in code_hits:
         hits = code_hits[code]
         if hits == 0:
