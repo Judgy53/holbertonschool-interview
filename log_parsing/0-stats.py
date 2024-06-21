@@ -39,8 +39,7 @@ def handle_interrupt(sig, frame):
 
 
 signal.signal(signal.SIGINT, handle_interrupt)
-while True:
-    input = sys.stdin.readline()
+for input in sys.stdin:
     line_count += 1
 
     split_line = input.split(' ')
