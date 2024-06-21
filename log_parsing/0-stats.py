@@ -19,12 +19,12 @@ code_hits = {
 }
 
 
-def print_stats(file_size, code_hits) -> None:
+def print_stats(file_size, code_hits):
     """
     Print the current parsing stats
     """
     print('File size: {}'.format(file_size))
-    for code in code_hits:
+    for code in sorted(code_hits):
         hits = code_hits[code]
         if hits == 0:
             continue
@@ -40,9 +40,9 @@ try:
         if len(split_line) < 2:
             continue
 
-        code = split_line[-2]
+        code = split_line[- 2]
         try:
-            size = int(split_line[-1])
+            size = int(split_line[- 1])
         except Exception:
             continue
 
