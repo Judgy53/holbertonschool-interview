@@ -46,17 +46,13 @@ for input in sys.stdin:
     if len(split_line) < 2:
         continue
 
-    code = split_line[- 2]
-    try:
-        size = int(split_line[- 1])
-    except Exception:
-        continue
+    code = split_line[-2]
+    file_size += int(split_line[-1])
 
     if code not in code_hits:
         continue
 
     code_hits[code] += 1
-    file_size += size
     if line_count % 10 == 0:
         print_stats()
 print_stats()
