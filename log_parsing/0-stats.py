@@ -59,3 +59,4 @@ for input in sys.stdin:
     file_size += size
     if line_count % 10 == 0:
         print_stats()
+print_stats()
