@@ -4,6 +4,7 @@ LogParser Module.
 Provides a LogParser class that parses request log from stdin
 """
 import sys
+import signal
 
 line_count = 0
 file_size = 0
@@ -19,7 +20,7 @@ code_hits = {
 }
 
 
-def print_stats(file_size, code_hits):
+def print_stats():
     """
     Print the current parsing stats
     """
@@ -31,27 +32,31 @@ def print_stats(file_size, code_hits):
         print('{}: {}'.format(code, hits))
 
 
-try:
-    while True:
-        input = sys.stdin.readline()
-        line_count += 1
+def handle_interrupt(sig, frame):
+    """Print stats when process is interrupted"""
+    print_stats()
+    sys.exit(0)
 
-        split_line = input.split(' ')
-        if len(split_line) < 2:
-            continue
 
-        code = split_line[- 2]
-        try:
-            size = int(split_line[- 1])
-        except Exception:
-            continue
+signal.signal(signal.SIGINT, handle_interrupt)
+while True:
+    input = sys.stdin.readline()
+    line_count += 1
 
-        if code not in code_hits:
-            continue
+    split_line = input.split(' ')
+    if len(split_line) < 2:
+        continue
 
-        code_hits[code] += 1
-        file_size += size
-        if line_count % 10 == 0:
-            print_stats(file_size, code_hits)
-except KeyboardInterrupt:
-    print_stats(file_size, code_hits)
+    code = split_line[- 2]
+    try:
+        size = int(split_line[- 1])
+    except Exception:
+        continue
+
+    if code not in code_hits:
+        continue
+
+    code_hits[code] += 1
+    file_size += size
+    if line_count % 10 == 0:
+        print_stats()
