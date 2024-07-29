@@ -9,15 +9,17 @@ def nqueens(n):
     Returns an array of all possible solutions for a board of size `n`
     """
     if not isinstance(n, int):
-        raise TypeError("N must be a number")
+        print("N must be a number")
+        return
 
     if n < 4:
-        raise ValueError("N must be at least 4")
+        print("N must be a number")
+        return
 
-    return __solve__(n, [], [])
+    return __solve__(n, [])
 
 
-def __solve__(n, placed_queens, solutions):
+def __solve__(n, placed_queens):
     """ Tries all solutions through recursive backtracking
     Returns an array of all found solutions
     """
@@ -28,13 +30,11 @@ def __solve__(n, placed_queens, solutions):
 
         placed_queens.append([x, y])
 
-        __solve__(n, placed_queens, solutions)
+        __solve__(n, placed_queens)
         if len(placed_queens) == n:
-            solutions.append(placed_queens.copy())
+            print(placed_queens)
 
         placed_queens.pop()
-
-    return solutions
 
 
 def __is_safe_position__(placed_queens, x, y):
@@ -58,7 +58,4 @@ if __name__ == "__main__":
         exit(1)
 
     size = int(sys.argv[1]) if sys.argv[1].isdigit() else None
-    try:
-        print(*nqueens(size), sep='\n')
-    except (TypeError, ValueError) as error:
-        print(error)
+    nqueens(size)
