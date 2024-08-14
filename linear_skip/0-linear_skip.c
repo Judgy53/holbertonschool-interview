@@ -23,7 +23,7 @@ skiplist_t *linear_skip(skiplist_t *head, int value)
 	{
 		printf("Value checked at index [%ld] = [%d]\n",
 				express_node->index, express_node->n);
-		if (express_node->n > value)
+		if (express_node->n >= value)
 			break;
 		start_node = express_node;
 		express_node = express_node->express;
