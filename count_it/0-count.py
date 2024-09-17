@@ -15,12 +15,10 @@ def count_words(subreddit, word_list, occurences=None, after=''):
         occurences = dict.fromkeys(set(word_list), 0)
 
     headers = {'User-agent': 'python:count_it:v0.1 (by u/judgedead53)'}
-    try:
-        r = req.get('https://www.reddit.com/r/{}/hot.json?after={}&limit=100'
-                    .format(subreddit, after), headers=headers)
-        r.raise_for_status()
-    except Exception as e:
-        print(e)
+    r = req.get('https://www.reddit.com/r/{}/hot.json?after={}&limit=100'
+                .format(subreddit, after), headers=headers)
+
+    if r.status_code != 200:
         return
 
     data = r.json()['data']
