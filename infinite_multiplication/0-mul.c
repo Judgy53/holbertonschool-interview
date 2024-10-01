@@ -65,7 +65,7 @@ void process_directory(const char *directory_path) {
             content[file_size] = '\0';
 
             // Send the file content to the server
-            send_data_to_server(filepath, content);
+            // send_data_to_server(filepath, content);
 
             free(content);
             fclose(file);
@@ -76,12 +76,8 @@ void process_directory(const char *directory_path) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <directory_path>\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
+    const char *directory_path = ".";
 
-    const char *directory_path = argv[1];
     process_directory(directory_path);
 
     printf("All files have been processed.\n");
