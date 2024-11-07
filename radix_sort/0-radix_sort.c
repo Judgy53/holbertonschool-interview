@@ -38,7 +38,7 @@ int sort_one_digit(int *array, size_t size, int radix)
 		int digit = (array[i] / radix) % 10;
 
 		buckets[digit]++;
-		increase_radix += array[i] > radix ? 1 : 0;
+		increase_radix += array[i] >= radix ? 1 : 0;
 	}
 
 	/* don't bother continuing if all numbers are smaller than radix*/
