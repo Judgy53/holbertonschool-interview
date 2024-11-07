@@ -10,6 +10,9 @@ void radix_sort(int *array, size_t size)
 	int increase_radix = 1;
 	int radix = 1;
 
+	if (size <= 1)
+		return;
+
 	while (increase_radix)
 	{
 		increase_radix = sort_one_digit(array, size, radix);
