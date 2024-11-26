@@ -10,7 +10,7 @@ def is_land(grid, x, y):
     """
     Returns true if grid cell at (x, y) is land, false otherwise
     """
-    if not (0 <= y < len(grid) or 0 <= x < len(grid[y])):
+    if not (0 <= y < len(grid) and 0 <= x < len(grid[y])):
         return False
 
     return grid[y][x]
