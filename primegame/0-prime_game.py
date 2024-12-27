@@ -3,6 +3,7 @@
 Prime Game Module
 """
 
+
 def generate_primes_up_to(n):
     """
     Generate a list of prime numbers up to a given number.
